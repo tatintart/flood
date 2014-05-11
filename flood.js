@@ -1,13 +1,16 @@
-var snap = Snap('#flood');
+var gridSize = 5;
+var colorCount = 6;
+
+var game = Snap('#game');
+game.attr({
+    viewBox: "0 0 " + gridSize + " " + gridSize,
+    shapeRendering: "crispEdges"
+});
 
 var GraphicalCell = function(color, i, j) {
-    this.rect = snap.rect(1000 * i / gridSize,
-        1000 * j / gridSize,
-        1000 / gridSize,
-        1000 / gridSize);
+    this.rect = game.rect(i, j, 1, 1);
     this.rect.attr({
-        class: "color-" + color,
-        shapeRendering: "crispEdges"
+        class: "color-" + color
     });
 };
 
@@ -54,9 +57,6 @@ Cell.prototype.navigate = function(color) {
 };
 
 
-var gridSize = 10;
-var colorCount = 6;
-
 var grid = [];
 var cells = [];
 
@@ -80,12 +80,20 @@ for (var i = 0; i < gridSize; ++i) {
     grid.push(row);
 }
 
+var topControls = Snap('#top-controls');
+var stepText = topControls.text(2, 5, "Plop");
+stepText.attr({
+    style: "font-size: 5px"
+});
+var step = -1;
+
 function switchColor(color) {
+    stepText.node.textContent = 'Step ' + (++step);
     if (color < 0 || color >= colorCount) {
         alert("Impossible color: " + color);
         return;
     }
-    snap.attr({
+    game.attr({
         class: "current-" + color
     });
     cells.forEach(function(cell) {
@@ -95,13 +103,16 @@ function switchColor(color) {
         return !cell.inNetwork;
     }).length === 0) {
         alert("youpi !");
+        window.location = window.location;
     }
 }
 
 switchColor(grid[0][0].color);
 
+var bottomControls = Snap('#bottom-controls');
+
 function makeCircle(i) {
-    var circle = snap.circle((2 * i + 1) * 1000 / (colorCount * 2), 1100, 60);
+    var circle = bottomControls.circle((2 * i + 1) * 100 / (colorCount * 2), 10, 6);
     circle.attr({
         class: "color-" + i
     });

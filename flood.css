@@ -2,14 +2,12 @@ html, body {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
-	/*background-color: #ccc;*/
 }
 
-svg {
+svg#flood {
 	position:fixed;
 	top:2%; left:2%;
 	width: 96%; height:96%; 
-	/*background-color: #fff;*/
 }
 
 .color-0, .current-0 .in-network {
