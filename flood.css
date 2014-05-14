@@ -4,10 +4,14 @@ html, body {
 	overflow: hidden;
 }
 
-svg#flood {
+#flood {
 	position:fixed;
 	top:2%; left:2%;
 	width: 96%; height:96%; 
+}
+
+#top-controls {
+	font-size: 5px;
 }
 
 .color-0, .current-0 .in-network {
