@@ -20,7 +20,6 @@ GraphicalCell.prototype.setInNetwork = function() {
     });
 };
 
-
 var Cell = function(color, graphicalCell, inNetwork) {
     this.color = color;
     this.graphicalCell = graphicalCell;
@@ -56,29 +55,40 @@ Cell.prototype.navigate = function(color) {
     });
 };
 
-
-var grid = [];
-var cells = [];
-
-for (var i = 0; i < gridSize; ++i) {
+function createRow(i, previousRow) {
     var row = [];
+    var cell;
     for (j = 0; j < gridSize; ++j) {
-        var color = Math.floor(Math.random() * colorCount);
-        var graphicalCell = new GraphicalCell(color, i, j);
-        var cell = new Cell(color, graphicalCell, i === 0 && j === 0);
-        if (i > 0) {
-            cell.addNeighbour(grid[i - 1][j]);
-            grid[i - 1][j].addNeighbour(cell);
-        }
-        if (j > 0) {
-            cell.addNeighbour(row[j - 1]);
-            row[j - 1].addNeighbour(cell);
-        }
+        cell = createCell(i, j, [cell, previousRow[j]]);
         row.push(cell);
-        cells.push(cell);
     }
-    grid.push(row);
+    return row;
 }
+
+function createCell(i, j, neighbours) {
+    var color = Math.floor(Math.random() * colorCount);
+    var graphicalCell = new GraphicalCell(color, i, j);
+    var cell = new Cell(color, graphicalCell, i === 0 && j === 0);
+    neighbours.filter(function(a) {
+        return a;
+    }).forEach(function(neighbour) {
+        cell.addNeighbour(neighbour);
+        neighbour.addNeighbour(cell);
+    })
+    return cell;
+}
+
+function createGrid() {
+    var grid = [];
+    var row = [];
+    for (var i = 0; i < gridSize; ++i) {
+        row = createRow(i, row);
+        grid.push(row);
+    }
+    return Array.prototype.concat.apply([], grid);
+}
+
+var cells = createGrid();
 
 var topControls = Snap('#top-controls');
 var stepText = topControls.text(2, 5, "Plop");
@@ -107,7 +117,7 @@ function switchColor(color) {
     }
 }
 
-switchColor(grid[0][0].color);
+switchColor(cells[0].color);
 
 var bottomControls = Snap('#bottom-controls');
 
